@@ -1,5 +1,6 @@
 const canvas = document.getElementById("particles");
 
+//TODO somehow handle resizeing?
 canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -70,29 +71,13 @@ function animate() {
 	for(let particle of particles) {
 		let area = new Cirlce(particle.location.clone(), searchRadius);
 		let near = qt.query(area);
-		let closest = [];
 		//for(auto part : near) { in c++
-		//find the nearest maxConnections (2) particles
 		for(let part of near) {
 			//skip this
 			if(part === particle) continue;
 			let distance = particle.location.sub(part).magnitude();
-			let temp = {distance, part};
-			if(closest.length >= maxConnections) {
-				for(let dist of closest) {
-					if(temp.distance < dist.distance) {
-						//swap should hopefully bubble biggest out
-						[temp, dist] = [dist, temp];
-					}
-				}
-			} else {
-				closest.push(temp);
-			}
-		}
-
-		for(let part of closest) {
 			//reverse the scale
-			let distance = searchRadius - part.distance;
+			distance = searchRadius - distance;
 			//fix the scale to be 0-255 instead of 0-searchRadius
 			distance = Math.floor(scale(distance,maxWhite));
 
@@ -101,10 +86,9 @@ function animate() {
 			if(hexString.length < 2) hexString = "0" + hexString;
 			let colorStr = "#" + hexString + hexString + hexString;
 
+			//TODO sort lines by distance before drawing all of them
 			//draw line from partical to other particle using color
-			drawLine(particle.location, part.part.location, colorStr);
-			particle.connections++;
-			part.part.connections++;
+			drawLine(particle.location, part.location, colorStr);
 		}
 		//might need to be it's own loop
 		particle.draw();
