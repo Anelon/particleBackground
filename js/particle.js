@@ -1,6 +1,6 @@
 const particleSpeed = 20;
 class Particle {
-	constructor(location, speed, radius = 5) {
+	constructor(location, speed, radius = 2) {
 		if(!(location instanceof Vec2))
 			throw TypeError("Particle Location needs to be Vec2");
 		if(!(speed instanceof Vec2))
